@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Swagger UI</title>
-  <%#= favicon_link_tag 'favicon-32x32.png', rel: 'icon', type: 'image/png', sizes: '32x32' %>
-  <%#= favicon_link_tag 'favicon-16x16.png', rel: 'icon', type: 'image/png', sizes: '16x16' %>
+  <%#= favicon_link_tag 'swagger_engine/favicon-32x32.png', rel: 'icon', type: 'image/png', sizes: '32x32' %>
+  <%#= favicon_link_tag 'swagger_engine/favicon-16x16.png', rel: 'icon', type: 'image/png', sizes: '16x16' %>
 
   <%= stylesheet_link_tag "swagger_engine/application" %>
   <%= stylesheet_link_tag "swagger_engine/reset", media: "print" %>
@@ -30,16 +30,18 @@
         dom_id: "swagger-ui-container",
         supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'],
         onComplete: function(swaggerApi, swaggerUi){
-          if(typeof initOAuth == "function") {
-            initOAuth({
-              clientId: "your-client-id",
-              clientSecret: "your-client-secret-if-required",
-              realm: "your-realms",
-              appName: "your-app-name",
-              scopeSeparator: ",",
-              additionalQueryStringParams: {}
-            });
-          }
+          // if(typeof initOAuth == "function") {
+          //   initOAuth({
+          //     clientId: "your-client-id",
+          //     clientSecret: "your-client-secret-if-required",
+          //     realm: "your-realms",
+          //     appName: "your-app-name",
+          //     scopeSeparator: ",",
+          //     additionalQueryStringParams: {}
+          //   });
+          // }
+          $('#input_clientId').change(updateOauth);
+          $('#input_clientSecret').change(updateOauth);
 
           if(window.SwaggerTranslator) {
             window.SwaggerTranslator.translate();
@@ -49,7 +51,7 @@
             hljs.highlightBlock(e)
           });
 
-          addApiKeyAuthorization();
+          // addApiKeyAuthorization();
         },
         onFailure: function(data) {
           log("Unable to Load SwaggerUI");
@@ -70,7 +72,17 @@
         }
       }
 
-      $('#input_apiKey').change(addApiKeyAuthorization);
+      function updateOauth(){
+        console.log("in updateOauth");
+        initOAuth({
+          clientId: $('#input_clientId')[0].value,
+          clientSecret: $('#input_clientSecret')[0].value,
+          realm: "blank",
+          appName: "blank"
+        });
+      }
+
+      // $('#input_apiKey').change(addApiKeyAuthorization);
 
       // if you have an apiKey you would like to pre-populate on the page for demonstration purposes...
       /*
@@ -95,8 +107,11 @@
     <a id="logo" href="http://swagger.io">swagger</a>
     <form id='api_selector'>
       <div class='input'><input placeholder="http://example.com/api" id="input_baseUrl" name="baseUrl" type="text"/></div>
-      <div class='input'><input placeholder="api_key" id="input_apiKey" name="apiKey" type="text"/></div>
-      <div class='input'><a id="explore" href="#" data-sw-translate>Explore</a></div>
+      <div id='auth_container'></div>
+      <div class='input'><input placeholder="client id" id="input_clientId" name="clientId" type="text" autocomplete="off" style="max-width: 100px;"></div>
+      <div class='input'><input placeholder="client secret" id="input_clientSecret" name="clientSecret" type="text" autocomplete="off" style="max-width: 100px;"></div>
+      <!-- <div class='input'><input placeholder="api_key" id="input_apiKey" name="apiKey" type="text"/></div> -->
+      <!-- <div class='input'><a id="explore" href="#" data-sw-translate>Explore</a></div> -->
     </form>
   </div>
 </div>

@@ -32,4 +32,4 @@ module SwaggerEngine
   def configure
     yield(configuration)
   end
- end
+end
